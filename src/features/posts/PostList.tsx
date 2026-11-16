@@ -72,7 +72,7 @@ function PaginatedPosts({ posts }: { posts: Post[] }) {
   }
 
   return (
-    <div ref={topRef} className="scroll-mt-6 md:flex md:min-h-0 md:flex-1 md:flex-col">
+    <div ref={topRef} className="scroll-mt-18 md:flex md:min-h-0 md:flex-1 md:flex-col">
       <p aria-live="polite" className="mb-3 text-xs text-slate-500 tabular-nums">
         {totalPages > 1
           ? `${from}–${to} de ${posts.length} publicaciones`

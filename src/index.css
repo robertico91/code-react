@@ -5,6 +5,12 @@
   --color-brand-dark: oklch(0.42 0.13 250);
 }
 
+/* La cabecera es sticky (3.5rem): al mover el foco con Tab o al hacer scroll
+   hacia un elemento, el navegador deja ese hueco arriba para que no quede tapado. */
+html {
+  scroll-padding-top: 4.5rem;
+}
+
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
