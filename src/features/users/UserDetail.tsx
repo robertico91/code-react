@@ -44,15 +44,18 @@ export function UserDetail() {
   return (
     <div className="md:flex md:min-h-0 md:flex-1 md:flex-col">
       {/* En móvil la lista y el detalle no se ven a la vez: hace falta volver. La
-          barra queda fija bajo la cabecera (top-14 = su alto) para que se pueda
-          volver a la lista sin subir hasta arriba. Va a todo el ancho (-mx-4)
-          con fondo, para que el contenido no se lea por debajo. */}
-      <div className="sticky top-14 z-[5] -mx-4 mb-4 border-b border-slate-200 bg-slate-50/90 px-4 py-2 backdrop-blur md:hidden">
+          barra va pegada a la cabecera desde el principio (-mt-6 anula el padding
+          superior del contenedor) y se queda ahí al hacer scroll: top-[57px] es
+          el alto de la cabecera con su borde, así la posición inicial y la fija
+          son la misma y no da un salto. A todo el ancho (-mx-4) y con fondo, para
+          que el contenido no se lea por debajo. */}
+      <div className="sticky top-[57px] z-[5] -mx-4 -mt-6 mb-4 border-b border-slate-200 bg-slate-50/90 px-4 py-2 backdrop-blur md:hidden">
         <Link
           to="/"
-          className="inline-flex items-center gap-1 rounded py-1 text-sm font-medium text-brand hover:text-brand-dark focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
+          className="inline-flex items-center gap-1.5 rounded py-1 text-sm font-medium text-brand hover:text-brand-dark focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
         >
-          <span aria-hidden="true">‹</span> Usuarios
+          <BackArrowIcon />
+          Volver a usuarios
         </Link>
       </div>
       {content}
@@ -75,5 +78,22 @@ function UserProfileSkeleton() {
         </div>
       </div>
     </Skeleton>
+  );
+}
+
+function BackArrowIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="size-4"
+    >
+      <path d="M19 12H5M12 19l-7-7 7-7" />
+    </svg>
   );
 }
