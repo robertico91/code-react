@@ -65,7 +65,7 @@ src/
 ## Reglas de la API (JSONPlaceholder)
 
 - `fetch` no lanza con 4xx/5xx: el cliente comprueba `res.ok` y lanza un error.
-- `POST /posts` siempre devuelve `id: 101`. Las publicaciones creadas usan un id local único (`crypto.randomUUID()`); nunca el id de la respuesta como `key`.
+- `POST /posts` siempre devuelve `id: 101`. Las publicaciones creadas usan un id local único, negativo y decreciente (-1, -2…: sigue siendo número y nunca coincide con los de la API); nunca el id de la respuesta como `key`.
 - La API no persiste. Las publicaciones creadas se añaden a la caché con `setQueryData`, y la query de publicaciones usa `staleTime: Infinity` y `refetchOnWindowFocus: false` para que un refetch no las borre.
 - La nueva publicación va arriba de la lista.
 - Un usuario inexistente (`/users/999`, `/users/abc`) muestra "Usuario no encontrado", no una pantalla rota. Se resuelve con la lista en caché, sin pedir el usuario aparte.

@@ -71,7 +71,7 @@ Controlado a mano: son dos campos obligatorios, así que react-hook-form y zod m
 
 **Crear una publicación**
 
-`POST /posts` responde 201 pero JSONPlaceholder no guarda nada, así que la publicación devuelta se añade arriba de la lista directamente en la caché de TanStack Query (`setQueryData` en el `onSuccess` de la mutación). Para que no desaparezca, la query de publicaciones usa `staleTime: Infinity` (no se recarga sola) y `gcTime: Infinity` (al cambiar de usuario y volver, sigue ahí). Tras crearla se cierra el panel y se vuelve a la página 1 con la lista arriba para que se vea. Mientras se envía, el panel no se puede cerrar.
+`POST /posts` responde 201 pero JSONPlaceholder no guarda nada, así que la publicación devuelta se añade arriba de la lista directamente en la caché de TanStack Query (`setQueryData` en el `onSuccess` de la mutación). Para que no desaparezca, la query de publicaciones usa `staleTime: Infinity` (no se recarga sola) y `gcTime: Infinity` (al cambiar de usuario y volver, sigue ahí). Como la API responde siempre `id: 101`, al crear dos publicaciones React avisaba de `key` duplicadas (lo vi en la consola al probarlo); ahora cada una recibe un id local negativo y decreciente (-1, -2…), que sigue siendo un número y nunca coincide con los de la API. Tras crearla se cierra el panel y se vuelve a la página 1 con la lista arriba para que se vea. Mientras se envía, el panel no se puede cerrar.
 
 **Toasts de confirmación y de error**
 
