@@ -1,5 +1,6 @@
-import { useDeferredValue, useState } from "react";
+import { useDeferredValue, useRef, useState } from "react";
 import { NavLink } from "react-router";
+import { Button } from "@/components/Button";
 import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
 import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
 import { filterUsers } from "./filterUsers";
@@ -12,19 +13,33 @@ export function UserList() {
   // Son 10 usuarios y el filtro es local: no hace falta debounce, solo que
   // escribir tenga prioridad sobre volver a pintar la lista.
   const deferredSearch = useDeferredValue(search);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // El botón desaparece al vaciar la búsqueda: si no movemos el foco, quien usa
+  // teclado o lector de pantalla se queda "en ningún sitio". En el buscador,
+  // además, puede escribir otra búsqueda directamente.
+  function showAllUsers() {
+    setSearch("");
+    searchInputRef.current?.focus();
+  }
 
   return (
     // El buscador está siempre: la carga y el error solo afectan a los resultados,
     // así la columna no salta y se puede escribir mientras llegan los datos.
     // En escritorio solo hace scroll la lista; el buscador y el contador quedan fijos.
     <div className="flex flex-col gap-3 md:min-h-0 md:flex-1">
-      <UserSearch value={search} onChange={setSearch} />
-      <UserResults search={deferredSearch} />
+      <UserSearch ref={searchInputRef} value={search} onChange={setSearch} />
+      <UserResults search={deferredSearch} onShowAll={showAllUsers} />
     </div>
   );
 }
 
-function UserResults({ search }: { search: string }) {
+interface UserResultsProps {
+  search: string;
+  onShowAll: () => void;
+}
+
+function UserResults({ search, onShowAll }: UserResultsProps) {
   const { data: users, isPending, isError, error, refetch } = useUsers();
 
   if (isPending) return <UserListSkeleton />;
@@ -52,7 +67,12 @@ function UserResults({ search }: { search: string }) {
       </p>
 
       {visibleUsers.length === 0 ? (
-        <EmptyMessage>{`Ningún usuario coincide con «${search.trim()}».`}</EmptyMessage>
+        <div>
+          <EmptyMessage>{`Ningún usuario coincide con «${search.trim()}».`}</EmptyMessage>
+          <Button variant="secondary" onClick={onShowAll}>
+            Ver todos los usuarios
+          </Button>
+        </div>
       ) : (
         <ul className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white md:min-h-0 md:overflow-y-auto md:overscroll-contain">
           {visibleUsers.map((user) => (
