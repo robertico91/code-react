@@ -1,17 +1,14 @@
 import { useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
 import { TextAreaField, TextField } from "@/components/Field";
-import { ErrorMessage } from "@/components/StatusMessage";
 import { hasErrors, validatePost, type PostDraft, type PostErrors } from "./validatePost";
 
 interface NewPostFormProps {
-  /** Recibe el borrador ya recortado. Si la promesa falla, se conserva lo escrito. */
+  /** Recibe el borrador ya recortado. Si el envío falla, se conserva lo escrito. */
   onSubmit: (draft: PostDraft) => Promise<void>;
   onCancel: () => void;
   /** Envío en curso (lo controla quien envía, para bloquear también el panel). */
   pending: boolean;
-  /** Error del último envío; se muestra arriba y se conserva lo escrito. */
-  submitError?: unknown;
 }
 
 /**
@@ -27,7 +24,7 @@ interface NewPostFormProps {
  *   Se usa readOnly y aria-disabled en lugar de disabled: deshabilitar el
  *   elemento que tiene el foco lo manda al <body> y el lector de pantalla se pierde.
  */
-export function NewPostForm({ onSubmit, onCancel, pending, submitError }: NewPostFormProps) {
+export function NewPostForm({ onSubmit, onCancel, pending }: NewPostFormProps) {
   const [draft, setDraft] = useState<PostDraft>({ title: "", body: "" });
   const [errors, setErrors] = useState<PostErrors>({});
   const [attempted, setAttempted] = useState(false);
@@ -62,9 +59,6 @@ export function NewPostForm({ onSubmit, onCancel, pending, submitError }: NewPos
       className="flex min-h-0 flex-1 flex-col"
     >
       <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
-        {/* role="alert" (dentro de ErrorMessage): un fallo de envío sí se anuncia
-            al momento, a diferencia de los errores de cada campo. */}
-        {submitError != null && <ErrorMessage title="No se pudo publicar." error={submitError} />}
         <TextField
           ref={titleRef}
           id="new-post-title"

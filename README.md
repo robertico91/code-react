@@ -71,7 +71,11 @@ Controlado a mano: son dos campos obligatorios, así que react-hook-form y zod m
 
 **Crear una publicación**
 
-`POST /posts` responde 201 pero JSONPlaceholder no guarda nada, así que la publicación devuelta se añade arriba de la lista directamente en la caché de TanStack Query (`setQueryData` en el `onSuccess` de la mutación). Para que no desaparezca, la query de publicaciones usa `staleTime: Infinity` (no se recarga sola) y `gcTime: Infinity` (al cambiar de usuario y volver, sigue ahí). Tras crearla se cierra el panel, se vuelve a la página 1 con la lista arriba para que se vea, y se anuncia "Publicación creada." en una región `role="status"` que está siempre montada (si se montara junto con el texto, no se anunciaría). Si el envío falla, el panel sigue abierto con lo escrito y el error se muestra arriba con `role="alert"`; mientras se envía, el panel no se puede cerrar.
+`POST /posts` responde 201 pero JSONPlaceholder no guarda nada, así que la publicación devuelta se añade arriba de la lista directamente en la caché de TanStack Query (`setQueryData` en el `onSuccess` de la mutación). Para que no desaparezca, la query de publicaciones usa `staleTime: Infinity` (no se recarga sola) y `gcTime: Infinity` (al cambiar de usuario y volver, sigue ahí). Tras crearla se cierra el panel y se vuelve a la página 1 con la lista arriba para que se vea. Mientras se envía, el panel no se puede cerrar.
+
+**Toasts de confirmación y de error**
+
+Al crear una publicación sale un toast "Publicación creada"; si falla, uno de error con el motivo, y el panel sigue abierto con lo escrito. Los hice a mano (`components/toast`) en lugar de añadir una librería: son dos variantes y un visor. Las confirmaciones van a una región `aria-live="polite"` siempre montada y se cierran solas a los 4 segundos, pausándose con el ratón o el foco encima; los errores llevan `role="alert"` y no se cierran solos, porque hay que poder leerlos. El detalle que más me costó: el panel es un `<dialog>` modal en la capa superior y deja inerte el resto de la página, así que un toast normal quedaría detrás del fondo, sin poder cerrarse y sin anunciarse; por eso los errores (que llegan con el panel abierto) se pintan dentro del panel con un portal. El error se retira al reintentar o al cerrar el panel.
 
 **Paginación de las publicaciones en el cliente**
 
