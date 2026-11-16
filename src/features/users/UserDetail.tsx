@@ -32,7 +32,11 @@ export function UserDetail() {
     content = user ? (
       <>
         <UserProfile user={user} />
-        <section aria-labelledby="posts-heading" className="mt-8">
+        {/* Escritorio: ficha, título y paginación fijos; solo la lista hace scroll. */}
+        <section
+          aria-labelledby="posts-heading"
+          className="mt-8 md:flex md:min-h-0 md:flex-1 md:flex-col"
+        >
           <h3 id="posts-heading" className="mb-1 text-lg font-semibold">
             Publicaciones
           </h3>
@@ -46,7 +50,7 @@ export function UserDetail() {
   }
 
   return (
-    <div>
+    <div className="md:flex md:min-h-0 md:flex-1 md:flex-col">
       {/* En móvil la lista y el detalle no se ven a la vez: hace falta volver. */}
       <Link
         to="/"

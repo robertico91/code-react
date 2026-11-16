@@ -29,7 +29,9 @@ export default function App() {
           <UserList />
         </aside>
 
-        <main className="md:min-h-0 md:overflow-y-auto">
+        {/* En escritorio el panel no hace scroll entero: solo la lista de publicaciones
+            (ver UserDetail). Por eso es una columna flex que reparte el alto. */}
+        <main className="md:flex md:min-h-0 md:flex-col">
           <Routes>
             <Route path="/" element={<SelectUserPrompt />} />
             <Route path="/users/:userId" element={<UserDetail />} />

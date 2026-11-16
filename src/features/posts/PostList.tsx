@@ -50,6 +50,7 @@ const PAGE_SIZE = 5;
 function PaginatedPosts({ posts }: { posts: Post[] }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const topRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const { items, page, totalPages, from, to } = paginate(
     posts,
     Number(searchParams.get("page") ?? "1"),
@@ -63,13 +64,15 @@ function PaginatedPosts({ posts }: { posts: Post[] }) {
       else next.set("page", String(nextPage));
       return next;
     });
-    // Al cambiar de página se vuelve al principio de la lista; sin animación,
-    // para no marear a quien tiene el movimiento reducido.
+    // Al cambiar de página se vuelve al principio de la lista, sin animación para
+    // no marear a quien tiene el movimiento reducido. En escritorio hace scroll la
+    // propia lista; en móvil, la página.
+    listRef.current?.scrollTo({ top: 0 });
     topRef.current?.scrollIntoView({ block: "start" });
   }
 
   return (
-    <div ref={topRef} className="scroll-mt-6">
+    <div ref={topRef} className="scroll-mt-6 md:flex md:min-h-0 md:flex-1 md:flex-col">
       <p aria-live="polite" className="mb-3 text-xs text-slate-500 tabular-nums">
         {totalPages > 1
           ? `${from}–${to} de ${posts.length} publicaciones`
@@ -77,7 +80,15 @@ function PaginatedPosts({ posts }: { posts: Post[] }) {
             ? "1 publicación"
             : `${posts.length} publicaciones`}
       </p>
-      <ul className="space-y-3">
+      {/* Escritorio: crece con su contenido y, si no cabe, hace scroll solo ella (la
+          paginación queda justo debajo, siempre visible). tabIndex para poder
+          desplazarla con el teclado: sus tarjetas no tienen elementos enfocables. */}
+      <ul
+        ref={listRef}
+        tabIndex={0}
+        aria-labelledby="posts-heading"
+        className="space-y-3 rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none md:min-h-0 md:overflow-y-auto md:overscroll-contain"
+      >
         {items.map((post) => (
           <li key={post.id}>
             <article className="rounded-lg border border-slate-200 bg-white p-4">
@@ -91,7 +102,7 @@ function PaginatedPosts({ posts }: { posts: Post[] }) {
           </li>
         ))}
       </ul>
-      <div className="mt-6">
+      <div className="mt-4 md:shrink-0">
         <Pagination
           page={page}
           totalPages={totalPages}
@@ -106,7 +117,7 @@ function PaginatedPosts({ posts }: { posts: Post[] }) {
 /** Misma forma que las tarjetas reales: contador, título y cuatro líneas de texto. */
 function PostListSkeleton() {
   return (
-    <Skeleton label="Cargando publicaciones…">
+    <Skeleton label="Cargando publicaciones…" className="md:min-h-0 md:overflow-hidden">
       <div className="mb-3 flex h-4 items-center">
         <SkeletonBlock className="h-3 w-24 rounded" />
       </div>
