@@ -31,8 +31,9 @@ export function UserList() {
   return (
     // El buscador está siempre: la carga y el error solo afectan a los resultados,
     // así la columna no salta y se puede escribir mientras llegan los datos.
-    // En escritorio solo hace scroll la lista; título, contador y buscador quedan fijos.
-    <div className="flex flex-col gap-3 md:min-h-0 md:flex-1">
+    // Solo hace scroll la lista (escritorio, y móvil en "/"); título, contador y
+    // buscador quedan fijos.
+    <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <h2 id="users-heading" className="text-lg font-semibold">
           Usuarios
@@ -98,7 +99,7 @@ function UserResults({ query, visibleUsers, search, onShowAll }: UserResultsProp
   }
 
   return (
-    <ul className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white md:min-h-0 md:overflow-y-auto md:overscroll-contain">
+    <ul className="min-h-0 divide-y divide-slate-200 overflow-y-auto overscroll-contain rounded-lg border border-slate-200 bg-white">
       {visibleUsers.map((user) => (
         <li key={user.id}>
           {/* NavLink pone aria-current="page" en el usuario activo; el estilo de
@@ -153,7 +154,7 @@ const SKELETON_NAME_WIDTHS = ["w-36", "w-28", "w-40", "w-32", "w-44", "w-28"];
  */
 function UserListSkeleton() {
   return (
-    <Skeleton label="Cargando usuarios…" className="flex flex-col gap-3 md:min-h-0">
+    <Skeleton label="Cargando usuarios…" className="flex min-h-0 flex-col gap-3 overflow-hidden">
       <div className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
         {SKELETON_NAME_WIDTHS.map((width, index) => (
           <div key={index} className="flex items-center gap-3 px-4 py-3">
