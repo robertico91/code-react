@@ -51,10 +51,13 @@ src/
     users/      componentes, hooks y utilidades de usuarios
     posts/      componentes, hooks, validatePost.ts
   components/   piezas reutilizables (StatusMessage, Button, Field, Layout)
-  test/         setup, servidor MSW, handlers, renderWithProviders
+  test/         solo infraestructura: setup, servidor MSW, handlers, renderWithProviders
 ```
 
-Organización por feature, no por tipo de archivo.
+- Organización por feature, no por tipo de archivo.
+- Las carpetas se crean cuando llega su primer archivo; nada de carpetas vacías ni `.gitkeep`.
+- Alias `@/` → `src/` (en `tsconfig.app.json` y `vite.config.ts`). Imports entre carpetas con `@/` (`@/api/client`); dentro de la misma carpeta, relativos (`./filterUsers`).
+- Los tests van junto a lo que prueban: `filterUsers.test.ts` al lado de `filterUsers.ts`, `UserList.test.tsx` al lado de `UserList.tsx`.
 
 ## Reglas de la API (JSONPlaceholder)
 
