@@ -1,5 +1,6 @@
+import { EmptyState, PostsIcon } from "@/components/EmptyState";
 import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
-import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
+import { ErrorMessage } from "@/components/StatusMessage";
 import { usePosts } from "./usePosts";
 
 export function PostList({ userId }: { userId: number }) {
@@ -18,7 +19,15 @@ export function PostList({ userId }: { userId: number }) {
   }
 
   if (posts.length === 0) {
-    return <EmptyMessage>Este usuario aún no tiene publicaciones.</EmptyMessage>;
+    return (
+      <EmptyState
+        icon={<PostsIcon />}
+        title="Sin publicaciones"
+        description="Este usuario aún no ha publicado nada."
+        titleAs="p"
+        className="mt-3"
+      />
+    );
   }
 
   return (

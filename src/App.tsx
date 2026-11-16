@@ -1,5 +1,6 @@
 import { Route, Routes, useMatch } from "react-router";
 import { AppHeader } from "@/components/AppHeader";
+import { EmptyState, PostsIcon } from "@/components/EmptyState";
 import { NotFound } from "@/components/NotFound";
 import { UserDetail } from "@/features/users/UserDetail";
 import { UserList } from "@/features/users/UserList";
@@ -43,8 +44,15 @@ export default function App() {
 /** Solo en escritorio: en móvil la lista ya ocupa la pantalla y basta con ella. */
 function SelectUserPrompt() {
   return (
-    <p className="hidden rounded-lg border border-dashed border-slate-300 p-6 text-sm text-slate-600 md:block">
-      Selecciona un usuario para ver sus publicaciones.
-    </p>
+    // La visibilidad va en un contenedor propio: EmptyState ya es "flex" y mezclar
+    // "hidden" y "flex" en el mismo elemento depende del orden del CSS generado.
+    <div className="hidden md:block md:h-full">
+      <EmptyState
+        icon={<PostsIcon />}
+        title="Elige un usuario"
+        description="Verás su ficha y sus publicaciones. Puedes buscarlo por nombre en la lista."
+        className="h-full"
+      />
+    </div>
   );
 }
