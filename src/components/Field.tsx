@@ -47,14 +47,17 @@ export function TextField({
   onChange,
   error,
   readOnly = false,
+  autoFocusOnOpen = false,
   ref,
-}: BaseFieldProps & { ref?: Ref<HTMLInputElement> }) {
+}: BaseFieldProps & { ref?: Ref<HTMLInputElement>; autoFocusOnOpen?: boolean }) {
   return (
     <FieldShell id={id} label={label} error={error}>
       <input
         ref={ref}
         id={id}
         type="text"
+        // Lo usa SidePanel para saber a qué campo llevar el foco al abrirse.
+        data-autofocus={autoFocusOnOpen ? "" : undefined}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         readOnly={readOnly}
@@ -73,14 +76,15 @@ export function TextAreaField({
   onChange,
   error,
   readOnly = false,
+  rows = 4,
   ref,
-}: BaseFieldProps & { ref?: Ref<HTMLTextAreaElement> }) {
+}: BaseFieldProps & { ref?: Ref<HTMLTextAreaElement>; rows?: number }) {
   return (
     <FieldShell id={id} label={label} error={error}>
       <textarea
         ref={ref}
         id={id}
-        rows={4}
+        rows={rows}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         readOnly={readOnly}

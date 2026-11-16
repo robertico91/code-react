@@ -34,7 +34,7 @@ export function UserDetail() {
         <UserProfile user={user} />
         {/* key: al cambiar de usuario se monta de cero (lista, página y formulario) y
             no arrastra estado del anterior. */}
-        <PostsSection key={user.id} userId={user.id} />
+        <PostsSection key={user.id} userId={user.id} userName={user.name} />
       </>
     ) : (
       <EmptyMessage>Usuario no encontrado.</EmptyMessage>

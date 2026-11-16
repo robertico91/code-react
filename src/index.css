@@ -14,3 +14,9 @@ html {
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
+
+/* Con un panel modal abierto, la página de fondo no se desplaza (en móvil, el
+   scroll pasaría al fondo al llegar al final del panel). */
+html:has(dialog[open]) {
+  overflow: hidden;
+}

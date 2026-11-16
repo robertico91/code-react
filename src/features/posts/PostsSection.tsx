@@ -1,33 +1,33 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/Button";
+import { SidePanel } from "@/components/SidePanel";
 import { NewPostForm } from "./NewPostForm";
 import { PostList } from "./PostList";
 import type { PostDraft } from "./validatePost";
 
+interface PostsSectionProps {
+  userId: number;
+  userName: string;
+}
+
 /**
- * Título "Publicaciones", botón "Nueva publicación" que despliega el formulario
- * y la lista. El formulario está plegado por defecto: así no le quita sitio a la
- * lista mientras no se usa.
+ * Título "Publicaciones", botón "Nueva publicación" y la lista. El formulario se
+ * abre en un panel lateral izquierdo: en escritorio tapa la columna de usuarios
+ * mientras se escribe, pero deja a la vista la ficha del usuario para el que se
+ * publica; y no le quita sitio a la lista cuando no se usa.
  */
-export function PostsSection({ userId }: { userId: number }) {
+export function PostsSection({ userId, userName }: PostsSectionProps) {
   const [formOpen, setFormOpen] = useState(false);
-  const openButtonRef = useRef<HTMLButtonElement>(null);
-  const wasOpen = useRef(false);
+  // El envío a la API (y su estado "pending") se conecta en el siguiente paso;
+  // de momento, un envío válido cierra el panel.
+  const pending = false;
 
-  // Al cerrar el formulario, el foco vuelve al botón que lo abrió (si no, se
-  // perdería: el formulario que lo tenía desaparece).
-  useEffect(() => {
-    if (wasOpen.current && !formOpen) openButtonRef.current?.focus();
-    wasOpen.current = formOpen;
-  }, [formOpen]);
-
-  // El envío a la API se conecta en el siguiente paso; de momento, validar y cerrar.
   async function createPost(_draft: PostDraft) {
     setFormOpen(false);
   }
 
   return (
-    // Escritorio: ficha, título, formulario y paginación fijos; solo la lista hace scroll.
+    // Escritorio: ficha, título y paginación fijos; solo la lista hace scroll.
     <section
       aria-labelledby="posts-heading"
       className="mt-8 md:flex md:min-h-0 md:flex-1 md:flex-col"
@@ -36,21 +36,23 @@ export function PostsSection({ userId }: { userId: number }) {
         <h3 id="posts-heading" className="text-lg font-semibold">
           Publicaciones
         </h3>
-        {!formOpen && (
-          <Button ref={openButtonRef} onClick={() => setFormOpen(true)} className="gap-1.5">
-            <PlusIcon />
-            Nueva publicación
-          </Button>
-        )}
+        <Button onClick={() => setFormOpen(true)} aria-haspopup="dialog" className="gap-1.5">
+          <PlusIcon />
+          Nueva publicación
+        </Button>
       </div>
 
-      {formOpen && (
-        <div className="mb-4 md:shrink-0">
-          <NewPostForm onSubmit={createPost} onCancel={() => setFormOpen(false)} />
-        </div>
-      )}
-
       <PostList userId={userId} />
+
+      <SidePanel
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        title="Nueva publicación"
+        description={`Para ${userName}`}
+        locked={pending}
+      >
+        <NewPostForm onSubmit={createPost} onCancel={() => setFormOpen(false)} pending={pending} />
+      </SidePanel>
     </section>
   );
 }
