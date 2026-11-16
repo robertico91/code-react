@@ -25,9 +25,6 @@ export default function App() {
           aria-labelledby="users-heading"
           className={`flex-col md:flex md:min-h-0 ${isUserSelected ? "hidden" : "flex"}`}
         >
-          <h2 id="users-heading" className="mb-3 text-lg font-semibold">
-            Usuarios
-          </h2>
           <UserList />
         </aside>
 
