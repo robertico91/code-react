@@ -1,4 +1,5 @@
 import { useDeferredValue, useState } from "react";
+import { NavLink } from "react-router";
 import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
 import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
 import { filterUsers } from "./filterUsers";
@@ -55,21 +56,49 @@ function UserResults({ search }: { search: string }) {
       ) : (
         <ul className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white md:min-h-0 md:overflow-y-auto md:overscroll-contain">
           {visibleUsers.map((user) => (
-            <li key={user.id} className="flex items-center gap-3 px-4 py-3">
-              <UserAvatar user={user} />
-              <div className="min-w-0">
-                <p className="truncate font-medium" title={user.name}>
-                  {user.name}
-                </p>
-                <p className="truncate text-sm text-slate-500" title={user.email}>
-                  {user.email}
-                </p>
-              </div>
+            <li key={user.id}>
+              {/* NavLink pone aria-current="page" en el usuario activo; el estilo de
+                  seleccionado cuelga de ese atributo, así visual y accesibilidad van juntos. */}
+              <NavLink
+                to={`/users/${user.id}`}
+                className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none focus-visible:ring-inset aria-[current=page]:bg-brand/5 aria-[current=page]:shadow-[inset_3px_0_0_var(--color-brand)]"
+              >
+                <UserAvatar user={user} />
+                <div className="min-w-0 flex-1">
+                  <p
+                    className="truncate font-medium group-aria-[current=page]:text-brand-dark"
+                    title={user.name}
+                  >
+                    {user.name}
+                  </p>
+                  <p className="truncate text-sm text-slate-500" title={user.email}>
+                    {user.email}
+                  </p>
+                </div>
+                <ChevronIcon className="size-4 shrink-0 text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 group-aria-[current=page]:text-brand group-aria-[current=page]:opacity-100" />
+              </NavLink>
             </li>
           ))}
         </ul>
       )}
     </>
+  );
+}
+
+function ChevronIcon({ className }: { className: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="m9 18 6-6-6-6" />
+    </svg>
   );
 }
 

@@ -50,8 +50,11 @@ src/
   features/
     users/      componentes, hooks y utilidades de usuarios
     posts/      componentes, hooks, validatePost.ts
-  components/   piezas reutilizables (StatusMessage, Button, Field, Layout)
+  components/   piezas reutilizables (AppHeader, Button, NotFound, Skeleton, StatusMessage)
   test/         solo infraestructura: setup, servidor MSW, handlers, renderWithProviders
+  App.tsx       layout y rutas (sin router: el BrowserRouter está en main.tsx)
+  main.tsx      providers: QueryClientProvider y BrowserRouter
+  queryClient.ts  createQueryClient(); los tests crean el suyo con retry: false
 ```
 
 - Organización por feature, no por tipo de archivo.

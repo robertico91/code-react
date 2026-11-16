@@ -57,6 +57,10 @@ La API responde muy rápido, así que los estados de carga casi no se ven. Para 
 
 En escritorio la app ocupa la altura de la ventana y la lista de usuarios y el panel de publicaciones tienen cada uno su scroll, así puedo recorrer la lista sin perder de vista las publicaciones. El buscador queda fijo encima de la lista. En móvil lo dejé con un único scroll de página a propósito: los scrolls anidados en pantallas táctiles atrapan el dedo y no se sabe qué se está moviendo. Uso `h-dvh` en lugar de `h-screen` para que la altura no falle con la barra del navegador móvil.
 
+**Usuario elegido en la URL**
+
+El usuario seleccionado vive en la ruta (`/users/:id`, con React Router): se puede compartir el enlace, funciona el botón atrás y sobrevive a un refresco. Las filas son `NavLink`, que marca la activa con `aria-current="page"`; el estilo de seleccionado cuelga de ese mismo atributo, así lo visual y lo accesible no se pueden desincronizar. El detalle reutiliza la lista ya cargada (misma query y caché), así que elegir un usuario no hace otra petición, y un id que no existe o no es un número muestra "Usuario no encontrado". En móvil solo se ve una parte cada vez: la lista en `/` y el detalle en `/users/:id` con un enlace para volver. La lista se oculta con CSS en lugar de desmontarse, para que conserve el texto de búsqueda al volver.
+
 **Qué muestra cada usuario en la lista**
 
 La lista sirve para reconocer y elegir, no para leer la ficha, así que cada fila lleva solo avatar con iniciales, nombre y email (que lo identifica sin ambigüedad). El resto (`@username`, empresa, ciudad, web) va en la cabecera del detalle. El color del avatar sale del `id`, así cada usuario conserva el suyo al recargar o filtrar. Las iniciales salen de una función pura que ignora tratamientos como "Mrs." y usa las dos primeras palabras ("Nicholas Runolfsdottir V" → NR). Nombre y email se cortan con "…" si no caben, con el valor completo en `title`.
