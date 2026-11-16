@@ -16,6 +16,8 @@ npm run dev        # http://localhost:5173
 Otros scripts:
 
 ```sh
+npm test              # tests (Vitest + Testing Library + MSW)
+npm run test:watch    # tests en modo watch
 npm run build         # typecheck + build de producción
 npm run typecheck
 npm run lint          # oxlint

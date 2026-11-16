@@ -23,7 +23,8 @@ npm run typecheck     # tsc -b
 npm run lint          # oxlint
 npm run format        # prettier --write .
 npm run format:check
-npm test              # vitest (cuando exista)
+npm test              # vitest run
+npm run test:watch    # vitest en modo watch
 ```
 
 Antes de cada commit: `typecheck`, `lint`, `format:check` y `test` deben pasar.
@@ -84,7 +85,9 @@ src/
 
 - Testear comportamiento, no implementación: `getByRole` / `getByLabelText`, nunca `getByTestId`.
 - `userEvent.setup()` en vez de `fireEvent`; `findBy*` para lo asíncrono.
-- Red mockeada con MSW (`onUnhandledRequest: "error"`), no con mocks de módulos propios.
+- Red mockeada con MSW, no con mocks de módulos propios. En MSW 3 la opción es `onUnhandledFrame: "error"` (antes `onUnhandledRequest`): una petición sin handler hace fallar el test.
+- Montar la app con `renderApp(ruta)` de `src/test/renderApp.tsx`. Para provocar errores, `server.use(...)` en el propio test.
+- jsdom no implementa `<dialog>.showModal()`, `scrollTo` ni `scrollIntoView`: están en `src/test/jsdomPolyfills.ts`.
 - `QueryClient` nuevo por test con `retry: false`.
 
 ## Código
