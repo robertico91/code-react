@@ -4,7 +4,7 @@ Reglas y decisiones del proyecto. Léelo antes de proponer o escribir código.
 
 ## Contexto
 
-Prueba técnica para un puesto de React frontend, con un límite de unas 3 horas. App pequeña en React + TypeScript que consume la API pública https://jsonplaceholder.typicode.com:
+Aplicación de página única (SPA) en React + TypeScript que consume la API pública https://jsonplaceholder.typicode.com:
 
 1. Lista de usuarios con búsqueda por nombre.
 2. Al elegir un usuario, ver sus publicaciones y crear una nueva con un formulario validado (título y texto obligatorios). La API no guarda nada: basta con que la nueva publicación aparezca en la lista.
