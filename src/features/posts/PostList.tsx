@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import type { Post } from "@/api/types";
 import { EmptyState, PostsIcon } from "@/components/EmptyState";
@@ -56,6 +56,13 @@ function PaginatedPosts({ posts }: { posts: Post[] }) {
     Number(searchParams.get("page") ?? "1"),
     PAGE_SIZE,
   );
+
+  // Al crear una publicación, la nueva pasa a ser la primera: la lista vuelve
+  // arriba para que se vea aunque se estuviera a mitad de la página 1.
+  const firstPostId = posts[0]?.id;
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: 0 });
+  }, [firstPostId]);
 
   function goToPage(nextPage: number) {
     setSearchParams((previous) => {
