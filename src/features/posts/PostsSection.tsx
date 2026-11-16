@@ -12,9 +12,9 @@ interface PostsSectionProps {
 
 /**
  * Título "Publicaciones", botón "Nueva publicación" y la lista. El formulario se
- * abre en un panel lateral izquierdo: en escritorio tapa la columna de usuarios
- * mientras se escribe, pero deja a la vista la ficha del usuario para el que se
- * publica; y no le quita sitio a la lista cuando no se usa.
+ * abre en un panel lateral derecho (donde se suelen esperar los formularios en
+ * panel): en escritorio deja a la vista la lista de usuarios mientras se escribe,
+ * y no le quita sitio a la lista de publicaciones cuando no se usa.
  */
 export function PostsSection({ userId, userName }: PostsSectionProps) {
   const [formOpen, setFormOpen] = useState(false);

@@ -12,7 +12,7 @@ interface SidePanelProps {
 }
 
 /**
- * Panel lateral izquierdo modal, hecho con <dialog> + showModal(). El navegador
+ * Panel lateral derecho modal, hecho con <dialog> + showModal(). El navegador
  * ya da lo difícil: el foco no sale del panel, el fondo queda inerte (ni clic ni
  * Tab ni lector de pantalla), Escape cierra y, al cerrar, el foco vuelve al
  * elemento que lo abrió.
@@ -32,15 +32,22 @@ export function SidePanel({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
+  const openerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (open && !dialog.open) {
+      // El navegador ya devuelve el foco al cerrar, pero lo recordamos también:
+      // el contenido se desmonta antes de close() y no queremos depender de eso.
+      openerRef.current =
+        document.activeElement instanceof HTMLElement ? document.activeElement : null;
       dialog.showModal();
       dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus();
     } else if (!open && dialog.open) {
       dialog.close();
+      if (openerRef.current?.isConnected) openerRef.current.focus();
+      openerRef.current = null;
     }
   }, [open]);
 
@@ -64,7 +71,7 @@ export function SidePanel({
       onClick={(event) => {
         if (event.target === event.currentTarget) requestClose();
       }}
-      className="fixed inset-y-0 right-auto left-0 m-0 h-dvh max-h-none w-full max-w-md bg-white p-0 shadow-2xl transition-transform duration-200 ease-out backdrop:bg-slate-900/40 backdrop:backdrop-blur-[2px] motion-reduce:transition-none starting:open:-translate-x-full"
+      className="fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none w-full max-w-md border-l border-slate-200 bg-white p-0 shadow-2xl transition-transform duration-200 ease-out backdrop:bg-slate-900/40 backdrop:backdrop-blur-[2px] motion-reduce:transition-none starting:open:translate-x-full"
     >
       {open && (
         <div className="flex h-full flex-col">
