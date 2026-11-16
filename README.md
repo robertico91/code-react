@@ -42,7 +42,7 @@ La API responde muy rápido, así que los estados de carga casi no se ven. Para 
 
 **Cliente de la API**
 
-- `fetch` no falla con un 4xx/5xx, así que `fetchJson` comprueba `res.ok` y lanza un `ApiError` con el código HTTP (0 si no hubo respuesta). Así distingo un usuario que no existe (404) de un fallo de red.
+- `fetch` no falla con un 4xx/5xx, así que `fetchJson` comprueba `res.ok` y lanza un `ApiError` con el código HTTP (0 si no hubo respuesta), que se muestra en el mensaje de error. Al principio tenía también `getUser` para detectar un usuario inexistente por el 404, pero lo quité: el detalle saca el usuario de la lista que ya está en caché, así que no hace falta pedirlo aparte.
 - Antes de escribirlo probé la API real: `/users/999` responde 404 y `POST /posts` responde 201 con `id: 101` sin guardar nada.
 
 **Carga y errores**
@@ -60,6 +60,10 @@ En escritorio la app ocupa la altura de la ventana y la lista de usuarios y el p
 **Usuario elegido en la URL**
 
 El usuario seleccionado vive en la ruta (`/users/:id`, con React Router): se puede compartir el enlace, funciona el botón atrás y sobrevive a un refresco. Las filas son `NavLink`, que marca la activa con `aria-current="page"`; el estilo de seleccionado cuelga de ese mismo atributo, así lo visual y lo accesible no se pueden desincronizar. El detalle reutiliza la lista ya cargada (misma query y caché), así que elegir un usuario no hace otra petición, y un id que no existe o no es un número muestra "Usuario no encontrado". En móvil solo se ve una parte cada vez: la lista en `/` y el detalle en `/users/:id` con un enlace para volver. La lista se oculta con CSS en lugar de desmontarse, para que conserve el texto de búsqueda al volver.
+
+**Detalle del usuario: ficha y publicaciones**
+
+Arriba, una ficha con lo que no cabe en la fila de la lista: avatar grande (del mismo color, para que se reconozca a la misma persona), nombre, `@username`, email (`mailto:`), empresa, ciudad y web (en otra pestaña, con `rel="noopener noreferrer"`). Debajo, sus publicaciones como tarjetas, con skeleton de la misma forma mientras cargan, error con reintento y estado vacío. Los títulos de la API vienen en minúscula y solo capitalizo la primera letra con CSS; el cuerpo respeta sus saltos de línea. `PostList` lleva `key` por usuario para no arrastrar estado al cambiar de uno a otro.
 
 **Qué muestra cada usuario en la lista**
 

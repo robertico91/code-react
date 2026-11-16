@@ -68,7 +68,7 @@ src/
 - `POST /posts` siempre devuelve `id: 101`. Las publicaciones creadas usan un id local único (`crypto.randomUUID()`); nunca el id de la respuesta como `key`.
 - La API no persiste. Las publicaciones creadas se añaden a la caché con `setQueryData`, y la query de publicaciones usa `staleTime: Infinity` y `refetchOnWindowFocus: false` para que un refetch no las borre.
 - La nueva publicación va arriba de la lista.
-- Un usuario inexistente (`/users/999`) muestra "Usuario no encontrado", no una pantalla rota.
+- Un usuario inexistente (`/users/999`, `/users/abc`) muestra "Usuario no encontrado", no una pantalla rota. Se resuelve con la lista en caché, sin pedir el usuario aparte.
 
 ## UI y accesibilidad
 

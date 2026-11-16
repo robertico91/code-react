@@ -4,8 +4,10 @@ export interface User {
   name: string;
   username: string;
   email: string;
-  phone: string;
   website: string;
+  address: {
+    city: string;
+  };
   company: {
     name: string;
   };

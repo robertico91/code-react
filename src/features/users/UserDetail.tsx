@@ -1,13 +1,16 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
-import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
 import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
+import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
+import { PostList } from "@/features/posts/PostList";
+import { UserProfile } from "./UserProfile";
 import { useUserId } from "./useUserId";
 import { useUsers } from "./useUsers";
 
 /**
- * Detalle del usuario elegido. Reutiliza la lista ya cargada (misma query y
- * caché que la columna de usuarios): elegir un usuario no hace otra petición.
+ * Detalle del usuario elegido: su ficha y sus publicaciones. La ficha reutiliza
+ * la lista ya cargada (misma query y caché que la columna de usuarios), así que
+ * elegir un usuario solo pide sus publicaciones.
  */
 export function UserDetail() {
   const userId = useUserId();
@@ -15,11 +18,7 @@ export function UserDetail() {
 
   let content: ReactNode;
   if (isPending) {
-    content = (
-      <Skeleton label="Cargando usuario…">
-        <SkeletonBlock className="h-7 w-48 rounded" />
-      </Skeleton>
-    );
+    content = <UserProfileSkeleton />;
   } else if (isError) {
     content = (
       <ErrorMessage
@@ -32,8 +31,14 @@ export function UserDetail() {
     const user = userId === null ? undefined : users.find((u) => u.id === userId);
     content = user ? (
       <>
-        <h2 className="text-xl font-semibold tracking-tight">{user.name}</h2>
-        <p className="mt-4 text-sm text-slate-600">Sus publicaciones aparecerán aquí.</p>
+        <UserProfile user={user} />
+        <section aria-labelledby="posts-heading" className="mt-8">
+          <h3 id="posts-heading" className="mb-1 text-lg font-semibold">
+            Publicaciones
+          </h3>
+          {/* key: al cambiar de usuario se monta de cero y no arrastra estado del anterior. */}
+          <PostList key={user.id} userId={user.id} />
+        </section>
       </>
     ) : (
       <EmptyMessage>Usuario no encontrado.</EmptyMessage>
@@ -41,7 +46,7 @@ export function UserDetail() {
   }
 
   return (
-    <section aria-label="Detalle del usuario">
+    <div>
       {/* En móvil la lista y el detalle no se ven a la vez: hace falta volver. */}
       <Link
         to="/"
@@ -50,6 +55,24 @@ export function UserDetail() {
         <span aria-hidden="true">‹</span> Usuarios
       </Link>
       {content}
-    </section>
+    </div>
+  );
+}
+
+function UserProfileSkeleton() {
+  return (
+    <Skeleton label="Cargando usuario…" className="rounded-lg border border-slate-200 bg-white p-5">
+      <div className="flex items-center gap-4">
+        <SkeletonBlock className="size-14 shrink-0 rounded-full" />
+        <div>
+          <div className="flex h-7 items-center">
+            <SkeletonBlock className="h-5 w-48 rounded" />
+          </div>
+          <div className="flex h-5 items-center">
+            <SkeletonBlock className="h-3 w-24 rounded" />
+          </div>
+        </div>
+      </div>
+    </Skeleton>
   );
 }
