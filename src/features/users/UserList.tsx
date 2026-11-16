@@ -1,5 +1,6 @@
 import { useDeferredValue, useState } from "react";
-import { EmptyMessage, ErrorMessage, LoadingMessage } from "@/components/StatusMessage";
+import { Skeleton, SkeletonBar } from "@/components/Skeleton";
+import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
 import { filterUsers } from "./filterUsers";
 import { UserSearch } from "./UserSearch";
 import { useUsers } from "./useUsers";
@@ -24,7 +25,7 @@ export function UserList() {
 function UserResults({ search }: { search: string }) {
   const { data: users, isPending, isError, error, refetch } = useUsers();
 
-  if (isPending) return <LoadingMessage>Cargando usuarios…</LoadingMessage>;
+  if (isPending) return <UserListSkeleton />;
 
   if (isError) {
     return (
@@ -61,5 +62,34 @@ function UserResults({ search }: { search: string }) {
         </ul>
       )}
     </>
+  );
+}
+
+/** Anchos variados para que la silueta no parezca una tabla. */
+const SKELETON_NAME_WIDTHS = ["w-36", "w-28", "w-40", "w-32", "w-44", "w-28"];
+
+/**
+ * Misma estructura que la lista real (contador + filas de nombre y @usuario con
+ * el mismo alto), para que al llegar los datos no se mueva nada.
+ */
+function UserListSkeleton() {
+  return (
+    <Skeleton label="Cargando usuarios…" className="flex flex-col gap-3 md:min-h-0">
+      <div className="flex h-4 items-center">
+        <SkeletonBar className="h-3 w-16" />
+      </div>
+      <div className="divide-y divide-slate-200 overflow-hidden rounded-md border border-slate-200 bg-white">
+        {SKELETON_NAME_WIDTHS.map((width, index) => (
+          <div key={index} className="px-4 py-3">
+            <div className="flex h-6 items-center">
+              <SkeletonBar className={`h-4 ${width}`} />
+            </div>
+            <div className="flex h-5 items-center">
+              <SkeletonBar className="h-3 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </Skeleton>
   );
 }

@@ -49,7 +49,9 @@ La API responde muy rápido, así que los estados de carga casi no se ven. Para 
 
 - Un solo reintento automático en lugar de los 3 por defecto: con 3, el mensaje de error tardaba varios segundos en salir, y el usuario ya tiene un botón "Reintentar".
 - Sin recarga al volver a la pestaña: los datos de JSONPlaceholder no cambian.
-- Cada lista tiene estado de carga (`role="status"`), error con reintento (`role="alert"`) y estado vacío.
+- Cada lista tiene estado de carga, error con reintento (`role="alert"`) y estado vacío.
+- **Skeleton en lugar de spinner para las listas.** Conozco la forma del contenido, así que el skeleton (con la misma estructura y alto de fila que la lista real) evita el salto de layout al llegar los datos y la espera parece más corta. Es decorativo (`aria-hidden`); la carga se anuncia con un `role="status"` oculto, y el pulso respeta `prefers-reduced-motion`. El spinner lo reservo para acciones en curso, como enviar el formulario.
+- La carga y el error solo sustituyen los resultados: el buscador está siempre visible y se puede escribir mientras llegan los datos.
 
 **Layout maestro-detalle con scroll independiente**
 
