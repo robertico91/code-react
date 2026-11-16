@@ -57,6 +57,10 @@ La API responde muy rápido, así que los estados de carga casi no se ven. Para 
 
 En escritorio la app ocupa la altura de la ventana y la lista de usuarios y el panel de publicaciones tienen cada uno su scroll, así puedo recorrer la lista sin perder de vista las publicaciones. El buscador queda fijo encima de la lista. En móvil lo dejé con un único scroll de página a propósito: los scrolls anidados en pantallas táctiles atrapan el dedo y no se sabe qué se está moviendo. Uso `h-dvh` en lugar de `h-screen` para que la altura no falle con la barra del navegador móvil.
 
+**Qué muestra cada usuario en la lista**
+
+La lista sirve para reconocer y elegir, no para leer la ficha, así que cada fila lleva solo avatar con iniciales, nombre y email (que lo identifica sin ambigüedad). El resto (`@username`, empresa, ciudad, web) va en la cabecera del detalle. El color del avatar sale del `id`, así cada usuario conserva el suyo al recargar o filtrar. Las iniciales salen de una función pura que ignora tratamientos como "Mrs." y usa las dos primeras palabras ("Nicholas Runolfsdottir V" → NR). Nombre y email se cortan con "…" si no caben, con el valor completo en `title`.
+
 **Búsqueda de usuarios en el cliente**
 
 La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo cargados para pintar la lista. Filtrar en el navegador es instantáneo, evita debounce y respuestas que llegan desordenadas, y me deja ignorar mayúsculas y tildes (`name_like` no ignora las tildes, y `?q=` busca en todos los campos, no solo en el nombre). Uso `useDeferredValue` para que escribir no se bloquee. Con muchos usuarios o paginación pasaría al servidor, con debounce y el texto en la query key.

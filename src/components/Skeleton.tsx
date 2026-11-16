@@ -27,7 +27,10 @@ export function Skeleton({ label, className = "", children }: SkeletonProps) {
   );
 }
 
-/** Barra gris con pulso; el pulso solo si el usuario no pidió reducir el movimiento. */
-export function SkeletonBar({ className }: { className: string }) {
-  return <span className={`block rounded bg-slate-200 motion-safe:animate-pulse ${className}`} />;
+/**
+ * Forma gris con pulso (barra, círculo…): tamaño y redondeo los pone quien la usa.
+ * El pulso solo se anima si el usuario no pidió reducir el movimiento.
+ */
+export function SkeletonBlock({ className }: { className: string }) {
+  return <span className={`block bg-slate-200 motion-safe:animate-pulse ${className}`} />;
 }

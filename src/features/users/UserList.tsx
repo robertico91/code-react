@@ -1,7 +1,8 @@
 import { useDeferredValue, useState } from "react";
-import { Skeleton, SkeletonBar } from "@/components/Skeleton";
+import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
 import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
 import { filterUsers } from "./filterUsers";
+import { UserAvatar } from "./UserAvatar";
 import { UserSearch } from "./UserSearch";
 import { useUsers } from "./useUsers";
 
@@ -52,11 +53,18 @@ function UserResults({ search }: { search: string }) {
       {visibleUsers.length === 0 ? (
         <EmptyMessage>{`Ningún usuario coincide con «${search.trim()}».`}</EmptyMessage>
       ) : (
-        <ul className="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white md:min-h-0 md:overflow-y-auto md:overscroll-contain">
+        <ul className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white md:min-h-0 md:overflow-y-auto md:overscroll-contain">
           {visibleUsers.map((user) => (
-            <li key={user.id} className="px-4 py-3">
-              <p className="font-medium">{user.name}</p>
-              <p className="text-sm text-slate-500">@{user.username}</p>
+            <li key={user.id} className="flex items-center gap-3 px-4 py-3">
+              <UserAvatar user={user} />
+              <div className="min-w-0">
+                <p className="truncate font-medium" title={user.name}>
+                  {user.name}
+                </p>
+                <p className="truncate text-sm text-slate-500" title={user.email}>
+                  {user.email}
+                </p>
+              </div>
             </li>
           ))}
         </ul>
@@ -69,23 +77,26 @@ function UserResults({ search }: { search: string }) {
 const SKELETON_NAME_WIDTHS = ["w-36", "w-28", "w-40", "w-32", "w-44", "w-28"];
 
 /**
- * Misma estructura que la lista real (contador + filas de nombre y @usuario con
- * el mismo alto), para que al llegar los datos no se mueva nada.
+ * Misma estructura que la lista real (contador + filas de avatar, nombre y email
+ * con el mismo alto), para que al llegar los datos no se mueva nada.
  */
 function UserListSkeleton() {
   return (
     <Skeleton label="Cargando usuarios…" className="flex flex-col gap-3 md:min-h-0">
       <div className="flex h-4 items-center">
-        <SkeletonBar className="h-3 w-16" />
+        <SkeletonBlock className="h-3 w-16 rounded" />
       </div>
-      <div className="divide-y divide-slate-200 overflow-hidden rounded-md border border-slate-200 bg-white">
+      <div className="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
         {SKELETON_NAME_WIDTHS.map((width, index) => (
-          <div key={index} className="px-4 py-3">
-            <div className="flex h-6 items-center">
-              <SkeletonBar className={`h-4 ${width}`} />
-            </div>
-            <div className="flex h-5 items-center">
-              <SkeletonBar className="h-3 w-20" />
+          <div key={index} className="flex items-center gap-3 px-4 py-3">
+            <SkeletonBlock className="size-10 shrink-0 rounded-full" />
+            <div>
+              <div className="flex h-6 items-center">
+                <SkeletonBlock className={`h-4 rounded ${width}`} />
+              </div>
+              <div className="flex h-5 items-center">
+                <SkeletonBlock className="h-3 w-32 rounded" />
+              </div>
             </div>
           </div>
         ))}
