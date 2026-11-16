@@ -1,6 +1,11 @@
+import { useRef } from "react";
+import { useSearchParams } from "react-router";
+import type { Post } from "@/api/types";
 import { EmptyState, PostsIcon } from "@/components/EmptyState";
+import { Pagination } from "@/components/Pagination";
 import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
 import { ErrorMessage } from "@/components/StatusMessage";
+import { paginate } from "./paginate";
 import { usePosts } from "./usePosts";
 
 export function PostList({ userId }: { userId: number }) {
@@ -30,13 +35,50 @@ export function PostList({ userId }: { userId: number }) {
     );
   }
 
+  return <PaginatedPosts posts={posts} />;
+}
+
+/** 10 publicaciones por usuario en la API: con 5 por página salen 2 páginas. */
+const PAGE_SIZE = 5;
+
+/**
+ * Paginación en el cliente: las publicaciones del usuario ya están cargadas (y
+ * las que se creen vivirán en la misma caché), así que cortar en páginas no
+ * necesita otra petición. La página vive en la URL (?page=2): se comparte,
+ * funciona el botón atrás y al cambiar de usuario se vuelve a la 1.
+ */
+function PaginatedPosts({ posts }: { posts: Post[] }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const topRef = useRef<HTMLDivElement>(null);
+  const { items, page, totalPages, from, to } = paginate(
+    posts,
+    Number(searchParams.get("page") ?? "1"),
+    PAGE_SIZE,
+  );
+
+  function goToPage(nextPage: number) {
+    setSearchParams((previous) => {
+      const next = new URLSearchParams(previous);
+      if (nextPage === 1) next.delete("page");
+      else next.set("page", String(nextPage));
+      return next;
+    });
+    // Al cambiar de página se vuelve al principio de la lista; sin animación,
+    // para no marear a quien tiene el movimiento reducido.
+    topRef.current?.scrollIntoView({ block: "start" });
+  }
+
   return (
-    <>
-      <p className="mb-3 text-xs text-slate-500">
-        {posts.length === 1 ? "1 publicación" : `${posts.length} publicaciones`}
+    <div ref={topRef} className="scroll-mt-6">
+      <p aria-live="polite" className="mb-3 text-xs text-slate-500 tabular-nums">
+        {totalPages > 1
+          ? `${from}–${to} de ${posts.length} publicaciones`
+          : posts.length === 1
+            ? "1 publicación"
+            : `${posts.length} publicaciones`}
       </p>
       <ul className="space-y-3">
-        {posts.map((post) => (
+        {items.map((post) => (
           <li key={post.id}>
             <article className="rounded-lg border border-slate-200 bg-white p-4">
               {/* Los títulos de la API vienen en minúscula: solo se capitaliza la primera letra. */}
@@ -49,7 +91,15 @@ export function PostList({ userId }: { userId: number }) {
           </li>
         ))}
       </ul>
-    </>
+      <div className="mt-6">
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          label="Paginación de publicaciones"
+        />
+      </div>
+    </div>
   );
 }
 

@@ -65,6 +65,10 @@ El usuario seleccionado vive en la ruta (`/users/:id`, con React Router): se pue
 
 Arriba, una ficha con lo que no cabe en la fila de la lista: avatar grande (del mismo color, para que se reconozca a la misma persona), nombre, `@username`, email (`mailto:`), empresa, ciudad y web (en otra pestaña, con `rel="noopener noreferrer"`). Debajo, sus publicaciones como tarjetas, con skeleton de la misma forma mientras cargan, error con reintento y estado vacío. Los títulos de la API vienen en minúscula y solo capitalizo la primera letra con CSS; el cuerpo respeta sus saltos de línea. `PostList` lleva `key` por usuario para no arrastrar estado al cambiar de uno a otro.
 
+**Paginación de las publicaciones en el cliente**
+
+5 publicaciones por página. La API permite paginar con `?_page=&_limit=`, pero las publicaciones del usuario ya están cargadas (10 por usuario) y las que cree vivirán en la misma caché sin existir en el servidor: paginando en el servidor no saldrían. Cortar en el cliente no necesita otra petición y la lógica es una función pura (`paginate`) fácil de testear. La página vive en la URL (`?page=2`), igual que el usuario elegido: se puede compartir, el botón atrás funciona y al cambiar de usuario se vuelve a la primera. Una página fuera de rango (`?page=99`, `?page=abc`) se ajusta a la más cercana válida. La página actual lleva `aria-current="page"`, el rango ("6–10 de 10 publicaciones") se anuncia con `aria-live` y, al cambiar de página, la lista vuelve a su principio sin animación.
+
 **Qué muestra cada usuario en la lista**
 
 La lista sirve para reconocer y elegir, no para leer la ficha, así que cada fila lleva solo avatar con iniciales, nombre y email (que lo identifica sin ambigüedad). El resto (`@username`, empresa, ciudad, web) va en la cabecera del detalle. El color del avatar sale del `id`, así cada usuario conserva el suyo al recargar o filtrar. Las iniciales salen de una función pura que ignora tratamientos como "Mrs." y usa las dos primeras palabras ("Nicholas Runolfsdottir V" → NR). Nombre y email se cortan con "…" si no caben, con el valor completo en `title`.
@@ -77,3 +81,4 @@ La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo carg
 
 - Validar las respuestas de la API en tiempo de ejecución (por ejemplo con zod) en lugar de confiar en el contrato.
 - Guardar el texto de búsqueda en la URL (`?q=`) para que sobreviva a un refresco y se pueda compartir.
+- Si hubiera muchas publicaciones, paginar en el servidor (`_page`, `_limit` y la cabecera `x-total-count`) y resumir los números de página con "…".
