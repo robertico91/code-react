@@ -51,6 +51,10 @@ La API responde muy rápido, así que los estados de carga casi no se ven. Para 
 - Sin recarga al volver a la pestaña: los datos de JSONPlaceholder no cambian.
 - Cada lista tiene estado de carga (`role="status"`), error con reintento (`role="alert"`) y estado vacío.
 
+**Layout maestro-detalle con scroll independiente**
+
+En escritorio la app ocupa la altura de la ventana y la lista de usuarios y el panel de publicaciones tienen cada uno su scroll, así puedo recorrer la lista sin perder de vista las publicaciones. El buscador queda fijo encima de la lista. En móvil lo dejé con un único scroll de página a propósito: los scrolls anidados en pantallas táctiles atrapan el dedo y no se sabe qué se está moviendo. Uso `h-dvh` en lugar de `h-screen` para que la altura no falle con la barra del navegador móvil.
+
 **Búsqueda de usuarios en el cliente**
 
 La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo cargados para pintar la lista. Filtrar en el navegador es instantáneo, evita debounce y respuestas que llegan desordenadas, y me deja ignorar mayúsculas y tildes (`name_like` no ignora las tildes, y `?q=` busca en todos los campos, no solo en el nombre). Uso `useDeferredValue` para que escribir no se bloquee. Con muchos usuarios o paginación pasaría al servidor, con debounce y el texto en la query key.

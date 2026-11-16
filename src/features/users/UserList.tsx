@@ -28,7 +28,8 @@ export function UserList() {
   const visibleUsers = filterUsers(users, deferredSearch);
 
   return (
-    <div className="space-y-3">
+    // En escritorio solo hace scroll la lista: el buscador y el contador quedan fijos arriba.
+    <div className="flex flex-col gap-3 md:min-h-0 md:flex-1">
       <UserSearch value={search} onChange={setSearch} />
 
       <p aria-live="polite" className="text-xs text-slate-500">
@@ -40,7 +41,7 @@ export function UserList() {
       {visibleUsers.length === 0 ? (
         <EmptyMessage>{`Ningún usuario coincide con «${deferredSearch.trim()}».`}</EmptyMessage>
       ) : (
-        <ul className="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+        <ul className="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white md:min-h-0 md:overflow-y-auto md:overscroll-contain">
           {visibleUsers.map((user) => (
             <li key={user.id} className="px-4 py-3">
               <p className="font-medium">{user.name}</p>
