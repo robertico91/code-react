@@ -91,6 +91,17 @@ La lista sirve para reconocer y elegir, no para leer la ficha, así que cada fil
 
 La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo cargados para pintar la lista. Filtrar en el navegador es instantáneo, evita debounce y respuestas que llegan desordenadas, y me deja ignorar mayúsculas y tildes (`name_like` no ignora las tildes, y `?q=` busca en todos los campos, no solo en el nombre). Uso `useDeferredValue` para que escribir no se bloquee. La lista va ordenada por nombre de la A a la Z: se ordena una sola vez al llegar los datos (con `select` de TanStack Query, que memoriza el resultado) usando `Intl.Collator("es")`, así mayúsculas y tildes no alteran el orden y el filtro lo conserva sin reordenar en cada tecla. Con muchos usuarios o paginación pasaría al servidor, con debounce y el texto en la query key.
 
+**Tests**
+
+33 tests con Vitest, Testing Library y MSW (`npm test`, unos 8 s). La mayoría montan la app entera en una ruta (`renderApp`) y la usan como una persona: buscan por rol y nombre accesible (nunca `getByTestId`), escriben y pulsan con `user-event`, y la red la simula MSW con el mismo comportamiento que JSONPlaceholder (404, id 101 al crear). Cubren:
+
+- Lista: orden alfabético, búsqueda sin mayúsculas ni tildes, estado vacío con "Ver todos los usuarios" (y el foco de vuelta al buscador), error con "Reintentar" y selección de un usuario.
+- Publicaciones: paginación, usuario sin publicaciones y usuario inexistente.
+- Nueva publicación: foco al abrir, validación (también con solo espacios) sin llegar a enviar, creación con su toast, error de envío conservando lo escrito, Escape, y la regresión del id 101 (dos publicaciones creadas sin keys duplicadas).
+- Funciones puras: `filterUsers`, `sortUsersByName`, `getInitials`, `paginate` y `validatePost`.
+
+Para comprobar que los tests sirven, rompí la app a propósito cuatro veces (quitar el id local, el `trim` de la validación, el orden y la comprobación de `res.ok`) y en cada caso falló el test que tenía que fallar.
+
 ## Qué haría con más tiempo
 
 - Validar las respuestas de la API en tiempo de ejecución (por ejemplo con zod) en lugar de confiar en el contrato.
