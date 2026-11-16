@@ -1,0 +1,94 @@
+# CLAUDE.md
+
+Reglas y decisiones del proyecto. Léelo antes de proponer o escribir código.
+
+## Contexto
+
+Prueba técnica para un puesto de React frontend, con un límite de unas 3 horas. App pequeña en React + TypeScript que consume la API pública https://jsonplaceholder.typicode.com:
+
+1. Lista de usuarios con búsqueda por nombre.
+2. Al elegir un usuario, ver sus publicaciones y crear una nueva con un formulario validado (título y texto obligatorios). La API no guarda nada: basta con que la nueva publicación aparezca en la lista.
+3. Estados de carga y de error visibles.
+4. Al menos 3 tests con Vitest y Testing Library.
+5. README con cómo ejecutarlo, decisiones, qué haría con más tiempo y cómo se usó la IA.
+
+Prioridad: criterio proporcional y detalles de producto, no cantidad de código. Nada de sobreingeniería.
+
+## Comandos
+
+```sh
+npm run dev           # Vite en http://localhost:5173
+npm run build         # tsc -b + vite build
+npm run typecheck     # tsc -b
+npm run lint          # oxlint
+npm run format        # prettier --write .
+npm run format:check
+npm test              # vitest (cuando exista)
+```
+
+Antes de cada commit: `typecheck`, `lint`, `format:check` y `test` deben pasar.
+
+## Stack y decisiones (no cambiar sin hablarlo)
+
+| Tema          | Decisión                                                                                 |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| Base          | Vite 8, React 19, TypeScript 7 en `strict` con `noUncheckedIndexedAccess`                |
+| Datos remotos | TanStack Query. Nada de `useEffect` + `fetch` en componentes                             |
+| Routing       | React Router; el usuario elegido vive en la URL: `/users/:userId`                        |
+| Formulario    | Controlado a mano + función pura `validatePost()`. Sin react-hook-form ni zod            |
+| Estilos       | Tailwind CSS v4 (`@theme` en `src/index.css`). Sin librerías de componentes ni shadcn/ui |
+| Lint/formato  | oxlint (el de la plantilla de Vite) + Prettier con `prettier-plugin-tailwindcss`         |
+| Tests         | Vitest + Testing Library + user-event + MSW                                              |
+
+No añadas dependencias sin justificarlo (axios, zod, clsx, librerías de UI, etc.).
+
+## Estructura
+
+```
+src/
+  api/          client.ts (fetchJson), users.ts, posts.ts, types.ts
+  features/
+    users/      componentes, hooks y utilidades de usuarios
+    posts/      componentes, hooks, validatePost.ts
+  components/   piezas reutilizables (StatusMessage, Button, Field, Layout)
+  test/         setup, servidor MSW, handlers, renderWithProviders
+```
+
+Organización por feature, no por tipo de archivo.
+
+## Reglas de la API (JSONPlaceholder)
+
+- `fetch` no lanza con 4xx/5xx: el cliente comprueba `res.ok` y lanza un error.
+- `POST /posts` siempre devuelve `id: 101`. Las publicaciones creadas usan un id local único (`crypto.randomUUID()`); nunca el id de la respuesta como `key`.
+- La API no persiste. Las publicaciones creadas se añaden a la caché con `setQueryData`, y la query de publicaciones usa `staleTime: Infinity` y `refetchOnWindowFocus: false` para que un refetch no las borre.
+- La nueva publicación va arriba de la lista.
+- Un usuario inexistente (`/users/999`) muestra "Usuario no encontrado", no una pantalla rota.
+
+## UI y accesibilidad
+
+- Cada petición tiene estado de carga, error con botón "Reintentar" y estado vacío.
+- Búsqueda en cliente, sin distinguir mayúsculas ni tildes; sin debounce (son 10 usuarios).
+- Inputs con `<label>` (puede ser `sr-only`). Errores con `aria-invalid`, `aria-describedby` y `role="alert"`; avisos de estado con `aria-live`.
+- Formulario: validar al enviar y revalidar al escribir después del primer intento; `trim()`; botón deshabilitado durante el envío; si falla, conservar lo escrito.
+- Foco visible (`focus-visible:`), navegable con teclado y responsive desde 375 px.
+- Textos de la interfaz en español.
+- Patrones de clases repetidos se extraen a componentes; `@apply` solo en casos puntuales.
+
+## Tests
+
+- Testear comportamiento, no implementación: `getByRole` / `getByLabelText`, nunca `getByTestId`.
+- `userEvent.setup()` en vez de `fireEvent`; `findBy*` para lo asíncrono.
+- Red mockeada con MSW (`onUnhandledRequest: "error"`), no con mocks de módulos propios.
+- `QueryClient` nuevo por test con `retry: false`.
+
+## Código
+
+- Prettier: `printWidth` 100, comillas dobles, punto y coma.
+- Sin `any` ni `as` forzados; tipar las respuestas de la API en `api/types.ts`.
+- Componentes pequeños y funciones puras para la lógica testeable (`filterUsers`, `validatePost`).
+
+## Commits
+
+- Commits pequeños y progresivos, uno por paso del plan; cada commit compila y pasa las comprobaciones.
+- Conventional Commits: asunto en inglés (`feat(posts): ...`), cuerpo en español explicando el porqué.
+- Sin líneas de atribución en los mensajes.
