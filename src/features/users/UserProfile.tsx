@@ -16,7 +16,13 @@ export function UserProfile({ user }: { user: User }) {
       <div className="flex items-center gap-4">
         <UserAvatar user={user} size="lg" />
         <div className="min-w-0">
-          <h2 className="truncate text-xl font-semibold tracking-tight">{user.name}</h2>
+          <h2
+            id="user-detail-heading"
+            tabIndex={-1}
+            className="truncate text-xl font-semibold tracking-tight focus:outline-none"
+          >
+            {user.name}
+          </h2>
           <p className="truncate text-sm text-slate-500">@{user.username}</p>
         </div>
       </div>

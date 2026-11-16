@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
 import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
+import { usePageTitle } from "@/components/usePageTitle";
 import { PostsSection } from "@/features/posts/PostsSection";
 import { UserProfile } from "./UserProfile";
 import { useUserId } from "./useUserId";
@@ -15,6 +16,8 @@ import { useUsers } from "./useUsers";
 export function UserDetail() {
   const userId = useUserId();
   const { data: users, isPending, isError, error, refetch } = useUsers();
+  const user = userId === null ? undefined : users?.find((u) => u.id === userId);
+  usePageTitle(isPending ? undefined : (user?.name ?? "Usuario no encontrado"));
 
   let content: ReactNode;
   if (isPending) {
@@ -28,7 +31,6 @@ export function UserDetail() {
       />
     );
   } else {
-    const user = userId === null ? undefined : users.find((u) => u.id === userId);
     content = user ? (
       <>
         <UserProfile user={user} />

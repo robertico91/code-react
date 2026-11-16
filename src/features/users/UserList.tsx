@@ -35,13 +35,13 @@ export function UserList() {
     // buscador quedan fijos.
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="users-heading" className="text-lg font-semibold">
+        <h2 id="users-heading" tabIndex={-1} className="text-lg font-semibold focus:outline-none">
           Usuarios
         </h2>
         {/* El contador va junto al título en lugar de repetir "usuarios" en otra línea.
             La región aria-live existe desde el principio para que se anuncien los cambios;
             visualmente solo el número, y "usuarios" solo para lectores de pantalla. */}
-        <p aria-live="polite" className="text-xs text-slate-500 tabular-nums">
+        <p aria-live="polite" className="text-xs text-slate-600 tabular-nums">
           {users && users.length > 0 && (
             <span className="rounded-full bg-slate-100 px-2 py-0.5">
               {visibleUsers.length === users.length
@@ -116,7 +116,7 @@ function UserResults({ query, visibleUsers, search, onShowAll }: UserResultsProp
               >
                 {user.name}
               </p>
-              <p className="truncate text-sm text-slate-500" title={user.email}>
+              <p className="truncate text-sm text-slate-600" title={user.email}>
                 {user.email}
               </p>
             </div>

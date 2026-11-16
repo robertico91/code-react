@@ -78,6 +78,10 @@ src/
 - Inputs con `<label>` (puede ser `sr-only`). Errores de campo con `aria-invalid` y `aria-describedby`, y al enviar el foco va al primer campo inválido (sin `role="alert"` por campo: se anunciarían todos a la vez). `role="alert"` para errores de carga o de envío; avisos de estado con `aria-live`.
 - Formulario: validar al enviar y revalidar al escribir después del primer intento; `trim()`; durante el envío, campos `readOnly` y botones `aria-disabled` (no `disabled`, que pierde el foco); si falla, conservar lo escrito.
 - Foco visible (`focus-visible:`), navegable con teclado y responsive desde 375 px.
+- Texto gris sobre fondos claros: `text-slate-600` como mínimo para texto pequeño (`slate-500` no llega a 4,5:1 sobre `slate-100` ni sobre la fila seleccionada).
+- Si una navegación oculta o desmonta el elemento con foco, el foco va al título de la pantalla nueva (`useRecoverFocusOnNavigation` en `App.tsx`; títulos con `tabIndex={-1}`).
+- Cada pantalla pone su título de pestaña con `usePageTitle`.
+- `src/a11y.test.tsx` pasa axe en las pantallas principales: una pantalla nueva debería añadirse ahí.
 - Textos de la interfaz en español.
 - Patrones de clases repetidos se extraen a componentes; `@apply` solo en casos puntuales.
 

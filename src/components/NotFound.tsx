@@ -1,6 +1,9 @@
 import { Link } from "react-router";
+import { usePageTitle } from "./usePageTitle";
 
 export function NotFound() {
+  usePageTitle("Página no encontrada");
+
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-6">
       <h2 className="text-lg font-semibold">Página no encontrada</h2>

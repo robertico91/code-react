@@ -91,9 +91,20 @@ La lista sirve para reconocer y elegir, no para leer la ficha, así que cada fil
 
 La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo cargados para pintar la lista. Filtrar en el navegador es instantáneo, evita debounce y respuestas que llegan desordenadas, y me deja ignorar mayúsculas y tildes (`name_like` no ignora las tildes, y `?q=` busca en todos los campos, no solo en el nombre). Uso `useDeferredValue` para que escribir no se bloquee. La lista va ordenada por nombre de la A a la Z: se ordena una sola vez al llegar los datos (con `select` de TanStack Query, que memoriza el resultado) usando `Intl.Collator("es")`, así mayúsculas y tildes no alteran el orden y el filtro lo conserva sin reordenar en cada tecla. Con muchos usuarios o paginación pasaría al servidor, con debounce y el texto en la query key.
 
+**Accesibilidad**
+
+Pasé axe-core en el navegador (detalle, panel abierto, inicio y página no encontrada). Solo salió contraste insuficiente en dos textos grises (4,34:1 y 4,42:1, frente al 4,5:1 mínimo), que oscurecí. Además de lo que no ve axe:
+
+- Al navegar en móvil el foco ya no se pierde: al elegir un usuario la lista se oculta y el enlace pulsado desaparece, así que el foco va al nombre del usuario; al volver, al título "Usuarios". En escritorio no se toca (el enlace sigue visible), ni en la carga inicial.
+- En el detalle, un enlace "Saltar a las publicaciones" que solo se ve al tabular, para no recorrer los 10 usuarios con el teclado.
+- El título de la pestaña cambia con la pantalla ("Leanne Graham · Usuarios y publicaciones"): en una SPA es lo primero que anuncia un lector de pantalla.
+- Ya venía de antes: un único `h1`, landmarks (cabecera, `aside` "Usuarios", `main`), foco visible en todo, `aria-current` en el usuario y la página actuales, avisos con `aria-live` y `role="alert"`, y animaciones que respetan `prefers-reduced-motion`.
+
+Para que no se rompa, hay un test con axe en las pantallas principales (sin la regla de contraste, que jsdom no puede medir). Lo comprobé quitando el nombre a un botón de la paginación: el test falla.
+
 **Tests**
 
-33 tests con Vitest, Testing Library y MSW (`npm test`, unos 8 s). La mayoría montan la app entera en una ruta (`renderApp`) y la usan como una persona: buscan por rol y nombre accesible (nunca `getByTestId`), escriben y pulsan con `user-event`, y la red la simula MSW con el mismo comportamiento que JSONPlaceholder (404, id 101 al crear). Cubren:
+36 tests con Vitest, Testing Library y MSW (`npm test`, unos 8 s). La mayoría montan la app entera en una ruta (`renderApp`) y la usan como una persona: buscan por rol y nombre accesible (nunca `getByTestId`), escriben y pulsan con `user-event`, y la red la simula MSW con el mismo comportamiento que JSONPlaceholder (404, id 101 al crear). Cubren:
 
 - Lista: orden alfabético, búsqueda sin mayúsculas ni tildes, estado vacío con "Ver todos los usuarios" (y el foco de vuelta al buscador), error con "Reintentar" y selección de un usuario.
 - Publicaciones: paginación, usuario sin publicaciones y usuario inexistente.
