@@ -63,7 +63,7 @@ La lista sirve para reconocer y elegir, no para leer la ficha, así que cada fil
 
 **Búsqueda de usuarios en el cliente**
 
-La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo cargados para pintar la lista. Filtrar en el navegador es instantáneo, evita debounce y respuestas que llegan desordenadas, y me deja ignorar mayúsculas y tildes (`name_like` no ignora las tildes, y `?q=` busca en todos los campos, no solo en el nombre). Uso `useDeferredValue` para que escribir no se bloquee. Con muchos usuarios o paginación pasaría al servidor, con debounce y el texto en la query key.
+La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo cargados para pintar la lista. Filtrar en el navegador es instantáneo, evita debounce y respuestas que llegan desordenadas, y me deja ignorar mayúsculas y tildes (`name_like` no ignora las tildes, y `?q=` busca en todos los campos, no solo en el nombre). Uso `useDeferredValue` para que escribir no se bloquee. La lista va ordenada por nombre de la A a la Z: se ordena una sola vez al llegar los datos (con `select` de TanStack Query, que memoriza el resultado) usando `Intl.Collator("es")`, así mayúsculas y tildes no alteran el orden y el filtro lo conserva sin reordenar en cada tecla. Con muchos usuarios o paginación pasaría al servidor, con debounce y el texto en la query key.
 
 ## Qué haría con más tiempo
 
