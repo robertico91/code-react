@@ -5,10 +5,11 @@ interface UserSearchProps {
 
 export function UserSearch({ value, onChange }: UserSearchProps) {
   return (
-    <div>
+    <div className="group relative">
       <label htmlFor="user-search" className="sr-only">
         Buscar usuario por nombre
       </label>
+      <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-brand" />
       <input
         id="user-search"
         type="search"
@@ -16,8 +17,27 @@ export function UserSearch({ value, onChange }: UserSearchProps) {
         onChange={(event) => onChange(event.target.value)}
         placeholder="Buscar por nombre…"
         autoComplete="off"
-        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:outline-none"
+        spellCheck={false}
+        className="h-10 w-full rounded-lg border border-slate-200 bg-white pr-3 pl-9 text-sm shadow-sm transition-[border-color,box-shadow] placeholder:text-slate-400 hover:border-slate-300 focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/15 focus-visible:outline-none [&::-webkit-search-cancel-button]:cursor-pointer"
       />
     </div>
+  );
+}
+
+function SearchIcon({ className }: { className: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
   );
 }
