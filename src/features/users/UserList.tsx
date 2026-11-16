@@ -5,11 +5,24 @@ import { UserSearch } from "./UserSearch";
 import { useUsers } from "./useUsers";
 
 export function UserList() {
-  const { data: users, isPending, isError, error, refetch } = useUsers();
   const [search, setSearch] = useState("");
   // Son 10 usuarios y el filtro es local: no hace falta debounce, solo que
   // escribir tenga prioridad sobre volver a pintar la lista.
   const deferredSearch = useDeferredValue(search);
+
+  return (
+    // El buscador está siempre: la carga y el error solo afectan a los resultados,
+    // así la columna no salta y se puede escribir mientras llegan los datos.
+    // En escritorio solo hace scroll la lista; el buscador y el contador quedan fijos.
+    <div className="flex flex-col gap-3 md:min-h-0 md:flex-1">
+      <UserSearch value={search} onChange={setSearch} />
+      <UserResults search={deferredSearch} />
+    </div>
+  );
+}
+
+function UserResults({ search }: { search: string }) {
+  const { data: users, isPending, isError, error, refetch } = useUsers();
 
   if (isPending) return <LoadingMessage>Cargando usuarios…</LoadingMessage>;
 
@@ -25,13 +38,10 @@ export function UserList() {
 
   if (users.length === 0) return <EmptyMessage>No hay usuarios.</EmptyMessage>;
 
-  const visibleUsers = filterUsers(users, deferredSearch);
+  const visibleUsers = filterUsers(users, search);
 
   return (
-    // En escritorio solo hace scroll la lista: el buscador y el contador quedan fijos arriba.
-    <div className="flex flex-col gap-3 md:min-h-0 md:flex-1">
-      <UserSearch value={search} onChange={setSearch} />
-
+    <>
       <p aria-live="polite" className="text-xs text-slate-500">
         {visibleUsers.length === users.length
           ? `${users.length} usuarios`
@@ -39,7 +49,7 @@ export function UserList() {
       </p>
 
       {visibleUsers.length === 0 ? (
-        <EmptyMessage>{`Ningún usuario coincide con «${deferredSearch.trim()}».`}</EmptyMessage>
+        <EmptyMessage>{`Ningún usuario coincide con «${search.trim()}».`}</EmptyMessage>
       ) : (
         <ul className="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white md:min-h-0 md:overflow-y-auto md:overscroll-contain">
           {visibleUsers.map((user) => (
@@ -50,6 +60,6 @@ export function UserList() {
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 }
