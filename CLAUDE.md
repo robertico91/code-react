@@ -95,3 +95,9 @@ src/
 - Commits pequeños y progresivos, uno por paso del plan; cada commit compila y pasa las comprobaciones.
 - Conventional Commits: asunto en inglés (`feat(posts): ...`), cuerpo en español explicando el porqué.
 - Sin líneas de atribución en los mensajes.
+
+## Documentación de decisiones
+
+- Cada decisión nueva se explica en la sección "Decisiones" del `README.md` en el mismo commit que la introduce (una o dos líneas, en primera persona, con el porqué).
+- Las ideas que se descartan por tiempo van a "Qué haría con más tiempo" en cuanto aparecen.
+- Si una decisión cambia una regla de este archivo, se actualiza aquí en el mismo commit.

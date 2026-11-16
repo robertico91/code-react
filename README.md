@@ -1,5 +1,61 @@
 # Usuarios y publicaciones
 
-Prueba técnica: app en React + TypeScript que consume la API pública de JSONPlaceholder.
+App en React + TypeScript que consume la API pública de [JSONPlaceholder](https://jsonplaceholder.typicode.com): lista de usuarios con búsqueda y, al elegir uno, sus publicaciones y un formulario para crear una nueva.
 
-> README en construcción.
+> Lo voy completando a medida que avanzo; cada decisión se añade en el mismo commit que la introduce.
+
+## Cómo ejecutarlo
+
+Requisitos: Node 20.19+ o 22.12+ (lo que pide Vite 8).
+
+```sh
+npm install
+npm run dev        # http://localhost:5173
+```
+
+Otros scripts:
+
+```sh
+npm run build         # typecheck + build de producción
+npm run typecheck
+npm run lint          # oxlint
+npm run format:check  # prettier
+```
+
+La API responde muy rápido, así que los estados de carga casi no se ven. Para verlos: DevTools → Network → "Slow 4G". Para ver los errores: "Offline" y recargar.
+
+## Decisiones
+
+**Stack**
+
+- **Vite + React 19 + TypeScript en modo `strict`** (con `noUncheckedIndexedAccess`). Es una SPA sin SEO ni SSR, así que Next.js sobraba.
+- **TanStack Query** para los datos remotos. Me da carga, error, caché, reintento y cancelación sin escribirlos a mano; un `useEffect` con `fetch` me habría obligado a gestionar las peticiones cruzadas al cambiar rápido de usuario.
+- **Tailwind CSS v4.** UI limpia y responsive en poco tiempo, sin CSS a medida. Los patrones que se repiten (botón, mensajes de estado) están en componentes para que el JSX se lea bien. No añadí librería de componentes: para dos pantallas no compensa.
+- **oxlint + Prettier.** oxlint es el linter que trae ahora la plantilla de Vite; lo mantuve en lugar de migrar a ESLint.
+
+**Estructura**
+
+- Organizada por feature (`features/users`, `features/posts`) y no por tipo de archivo; `api/` para el acceso a la API y `components/` para lo compartido.
+- Alias `@/` → `src/`, configurado antes del primer import para no tener que tocar todos los archivos después.
+- Los tests van junto al archivo que prueban; `src/test/` es solo para la infraestructura.
+- Las carpetas aparecen con su primer archivo, sin carpetas vacías.
+
+**Cliente de la API**
+
+- `fetch` no falla con un 4xx/5xx, así que `fetchJson` comprueba `res.ok` y lanza un `ApiError` con el código HTTP (0 si no hubo respuesta). Así distingo un usuario que no existe (404) de un fallo de red.
+- Antes de escribirlo probé la API real: `/users/999` responde 404 y `POST /posts` responde 201 con `id: 101` sin guardar nada.
+
+**Carga y errores**
+
+- Un solo reintento automático en lugar de los 3 por defecto: con 3, el mensaje de error tardaba varios segundos en salir, y el usuario ya tiene un botón "Reintentar".
+- Sin recarga al volver a la pestaña: los datos de JSONPlaceholder no cambian.
+- Cada lista tiene estado de carga (`role="status"`), error con reintento (`role="alert"`) y estado vacío.
+
+**Búsqueda de usuarios en el cliente**
+
+La API permite filtrar con `?name_like=`, pero son 10 usuarios que ya tengo cargados para pintar la lista. Filtrar en el navegador es instantáneo, evita debounce y respuestas que llegan desordenadas, y me deja ignorar mayúsculas y tildes (`name_like` no ignora las tildes, y `?q=` busca en todos los campos, no solo en el nombre). Uso `useDeferredValue` para que escribir no se bloquee. Con muchos usuarios o paginación pasaría al servidor, con debounce y el texto en la query key.
+
+## Qué haría con más tiempo
+
+- Validar las respuestas de la API en tiempo de ejecución (por ejemplo con zod) en lugar de confiar en el contrato.
+- Guardar el texto de búsqueda en la URL (`?q=`) para que sobreviva a un refresco y se pueda compartir.
