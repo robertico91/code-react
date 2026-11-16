@@ -1,5 +1,7 @@
 # Usuarios y publicaciones
 
+[![CI](https://github.com/robertico91/code-react/actions/workflows/ci.yml/badge.svg)](https://github.com/robertico91/code-react/actions/workflows/ci.yml)
+
 App en React + TypeScript que consume la API pública de [JSONPlaceholder](https://jsonplaceholder.typicode.com): lista de usuarios con búsqueda y, al elegir uno, sus publicaciones y un formulario para crear una nueva.
 
 > Lo voy completando a medida que avanzo; cada decisión se añade en el mismo commit que la introduce.
@@ -112,6 +114,10 @@ Para que no se rompa, hay un test con axe en las pantallas principales (sin la r
 - Funciones puras: `filterUsers`, `sortUsersByName`, `getInitials`, `paginate` y `validatePost`.
 
 Para comprobar que los tests sirven, rompí la app a propósito cuatro veces (quitar el id local, el `trim` de la validación, el orden y la comprobación de `res.ok`) y en cada caso falló el test que tenía que fallar.
+
+**Integración continua**
+
+Cada push a `main` y cada pull request pasan por GitHub Actions (`.github/workflows/ci.yml`): `npm ci`, typecheck, lint, formato, tests y build, con Node 22. Es lo mismo que ejecuto en local antes de cada commit, así que un fallo en la CI significa que algo se escapó. Si llegan dos pushes seguidos, la ejecución anterior se cancela.
 
 ## Qué haría con más tiempo
 
