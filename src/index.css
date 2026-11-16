@@ -5,10 +5,12 @@
   --color-brand-dark: oklch(0.42 0.13 250);
 }
 
-/* La cabecera es sticky (3.5rem): al mover el foco con Tab o al hacer scroll
-   hacia un elemento, el navegador deja ese hueco arriba para que no quede tapado. */
+/* Arriba hay elementos fijos: la cabecera (3.5rem) y, en el detalle en móvil, la
+   barra "‹ Usuarios" (~2.8rem). Al mover el foco con Tab o al hacer scroll hacia
+   un elemento, el navegador deja ese hueco arriba para que no quede tapado. Solo
+   importa en móvil: en escritorio la página no hace scroll. */
 html {
-  scroll-padding-top: 4.5rem;
+  scroll-padding-top: 7rem;
 }
 
 body {

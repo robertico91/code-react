@@ -43,13 +43,18 @@ export function UserDetail() {
 
   return (
     <div className="md:flex md:min-h-0 md:flex-1 md:flex-col">
-      {/* En móvil la lista y el detalle no se ven a la vez: hace falta volver. */}
-      <Link
-        to="/"
-        className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-brand hover:text-brand-dark focus-visible:rounded focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none md:hidden"
-      >
-        <span aria-hidden="true">‹</span> Usuarios
-      </Link>
+      {/* En móvil la lista y el detalle no se ven a la vez: hace falta volver. La
+          barra queda fija bajo la cabecera (top-14 = su alto) para que se pueda
+          volver a la lista sin subir hasta arriba. Va a todo el ancho (-mx-4)
+          con fondo, para que el contenido no se lea por debajo. */}
+      <div className="sticky top-14 z-[5] -mx-4 mb-4 border-b border-slate-200 bg-slate-50/90 px-4 py-2 backdrop-blur md:hidden">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1 rounded py-1 text-sm font-medium text-brand hover:text-brand-dark focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
+        >
+          <span aria-hidden="true">‹</span> Usuarios
+        </Link>
+      </div>
       {content}
     </div>
   );
