@@ -23,7 +23,7 @@ export function ErrorMessage({ title, error, onRetry }: ErrorMessageProps) {
   const detail = error instanceof ApiError ? error.message : "Ha ocurrido un error inesperado.";
 
   return (
-    <div role="alert" className="rounded-md border border-red-200 bg-red-50 p-4 text-sm">
+    <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm">
       <p className="font-medium text-red-800">{title}</p>
       <p className="mt-1 text-red-700">{detail}</p>
       {onRetry && (

@@ -94,7 +94,7 @@ function PaginatedPosts({ posts }: { posts: Post[] }) {
         ref={listRef}
         tabIndex={0}
         aria-labelledby="posts-heading"
-        className="space-y-3 rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none md:min-h-0 md:overflow-y-auto md:overscroll-contain"
+        className="space-y-3 rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:outline-none md:min-h-0 md:overflow-y-auto md:overscroll-contain md:pr-2"
       >
         {items.map((post) => (
           <li key={post.id}>
