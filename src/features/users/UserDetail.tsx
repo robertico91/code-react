@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { Skeleton, SkeletonBlock } from "@/components/Skeleton";
 import { EmptyMessage, ErrorMessage } from "@/components/StatusMessage";
-import { PostList } from "@/features/posts/PostList";
+import { PostsSection } from "@/features/posts/PostsSection";
 import { UserProfile } from "./UserProfile";
 import { useUserId } from "./useUserId";
 import { useUsers } from "./useUsers";
@@ -32,17 +32,9 @@ export function UserDetail() {
     content = user ? (
       <>
         <UserProfile user={user} />
-        {/* Escritorio: ficha, título y paginación fijos; solo la lista hace scroll. */}
-        <section
-          aria-labelledby="posts-heading"
-          className="mt-8 md:flex md:min-h-0 md:flex-1 md:flex-col"
-        >
-          <h3 id="posts-heading" className="mb-1 text-lg font-semibold">
-            Publicaciones
-          </h3>
-          {/* key: al cambiar de usuario se monta de cero y no arrastra estado del anterior. */}
-          <PostList key={user.id} userId={user.id} />
-        </section>
+        {/* key: al cambiar de usuario se monta de cero (lista, página y formulario) y
+            no arrastra estado del anterior. */}
+        <PostsSection key={user.id} userId={user.id} />
       </>
     ) : (
       <EmptyMessage>Usuario no encontrado.</EmptyMessage>

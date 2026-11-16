@@ -74,8 +74,8 @@ src/
 
 - Cada petición tiene estado de carga, error con botón "Reintentar" y estado vacío.
 - Búsqueda en cliente, sin distinguir mayúsculas ni tildes; sin debounce (son 10 usuarios).
-- Inputs con `<label>` (puede ser `sr-only`). Errores con `aria-invalid`, `aria-describedby` y `role="alert"`; avisos de estado con `aria-live`.
-- Formulario: validar al enviar y revalidar al escribir después del primer intento; `trim()`; botón deshabilitado durante el envío; si falla, conservar lo escrito.
+- Inputs con `<label>` (puede ser `sr-only`). Errores de campo con `aria-invalid` y `aria-describedby`, y al enviar el foco va al primer campo inválido (sin `role="alert"` por campo: se anunciarían todos a la vez). `role="alert"` para errores de carga o de envío; avisos de estado con `aria-live`.
+- Formulario: validar al enviar y revalidar al escribir después del primer intento; `trim()`; durante el envío, campos `readOnly` y botones `aria-disabled` (no `disabled`, que pierde el foco); si falla, conservar lo escrito.
 - Foco visible (`focus-visible:`), navegable con teclado y responsive desde 375 px.
 - Textos de la interfaz en español.
 - Patrones de clases repetidos se extraen a componentes; `@apply` solo en casos puntuales.

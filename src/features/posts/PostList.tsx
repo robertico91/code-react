@@ -28,7 +28,7 @@ export function PostList({ userId }: { userId: number }) {
       <EmptyState
         icon={<PostsIcon />}
         title="Sin publicaciones"
-        description="Este usuario aún no ha publicado nada."
+        description="Este usuario aún no ha publicado nada. Crea la primera con «Nueva publicación»."
         titleAs="p"
         className="mt-3"
       />
